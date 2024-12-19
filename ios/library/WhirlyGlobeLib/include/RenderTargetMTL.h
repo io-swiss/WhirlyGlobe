@@ -93,7 +93,7 @@ public:
     /// Return the texture reference, if there is one
     id<MTLTexture> getTex();
     
-protected:
+public:
     id<MTLTexture> tex;
     MTLPixelFormat pixelFormat;
     id<MTLTexture> depthTex;

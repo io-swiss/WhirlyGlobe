@@ -249,6 +249,9 @@ bool SceneRendererMTL::resize(int sizeX,int sizeY)
     if (framebufferTex)
         return false;
     
+    if (framebufferWidth == sizeX && framebufferHeight == sizeY)
+        return true;
+    
     setFramebufferSize(sizeX, sizeY);
     
     RenderTargetRef defaultTarget = renderTargets.back();
@@ -374,9 +377,16 @@ MTLRenderPipelineDescriptor *SceneRendererMTL::defaultRenderPipelineState(SceneR
     renderDesc.vertexFunction = program->vertFunc;
     renderDesc.fragmentFunction = program->fragFunc;
     
-    renderDesc.colorAttachments[0].pixelFormat = renderTarget->getPixelFormat();
-    if (renderTarget->getRenderPassDesc().depthAttachment.texture)
-        renderDesc.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float;
+    if (renderTarget->renderPassDescSetFromOutside) {
+        auto renderPass = renderTarget->getRenderPassDesc();
+        renderDesc.colorAttachments[0].pixelFormat = renderPass.colorAttachments[0].texture.pixelFormat;
+        renderDesc.depthAttachmentPixelFormat = renderPass.depthAttachment.texture.pixelFormat;
+        renderDesc.stencilAttachmentPixelFormat = renderPass.stencilAttachment.texture.pixelFormat;
+    } else {
+        renderDesc.colorAttachments[0].pixelFormat = renderTarget->getPixelFormat();
+        if (renderTarget->getRenderPassDesc().depthAttachment.texture)
+            renderDesc.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float;
+    }
     
     if (renderTarget->blendEnable) {
         renderDesc.colorAttachments[0].blendingEnabled = true;
@@ -924,7 +934,13 @@ void SceneRendererMTL::tryRender(TimeInterval duration, RenderInfo *renderInfo)
                     [lastCmdBuff commit];
                 lastCmdBuff = nil;
             }
-            id<MTLCommandBuffer> cmdBuff = [cmdQueue commandBuffer];
+            id<MTLCommandBuffer> cmdBuff = nil;
+            
+            // For the final render target we may want to use someone else's
+            if (targetContainer->renderTarget && targetContainer->renderTarget->getId() == EmptyIdentity && renderInfo)
+                cmdBuff = ((RenderInfoMTL*)renderInfo)->cmdBuffer;
+            if (!cmdBuff)
+                cmdBuff = [cmdQueue commandBuffer];
 
             // Keeps us from stomping on the last frame's uniforms
             if (lastRenderNo > 0 && drawGetter)
@@ -1272,8 +1288,10 @@ void SceneRendererMTL::tryRender(TimeInterval duration, RenderInfo *renderInfo)
 
             // This happens for offline rendering and we want to wait until the render finishes to return it
             if (!drawGetter) {
-                [cmdBuff commit];
-                [cmdBuff waitUntilCompleted];
+                if (cmdBuff != ((RenderInfoMTL*)renderInfo)->cmdBuffer) {
+                    [cmdBuff commit];
+                    [cmdBuff waitUntilCompleted];
+                }
                 lastCmdBuff = nil;
             }
         }

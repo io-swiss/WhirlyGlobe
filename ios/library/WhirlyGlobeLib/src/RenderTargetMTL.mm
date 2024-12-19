@@ -162,6 +162,7 @@ void RenderTargetMTL::setTargetTexture(TextureBaseMTL *inTex)
     TextureBaseMTL *theTex = (TextureBaseMTL *)inTex;
     tex = theTex->getMTLID();
     pixelFormat = inTex->getMTLID().pixelFormat;
+    renderPassDesc.clear();
 }
 
 void RenderTargetMTL::setTargetDepthTexture(TextureBaseMTL *inDepthTex)

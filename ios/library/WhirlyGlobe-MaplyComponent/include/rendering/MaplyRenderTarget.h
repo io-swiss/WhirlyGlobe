@@ -20,6 +20,7 @@
 
 #import <UIKit/UIKit.h>
 #import <WhirlyGlobe/MaplyTexture.h>
+
 @class MaplyShader;
 
 typedef NS_ENUM(NSUInteger,MaplyMipmapType) {
