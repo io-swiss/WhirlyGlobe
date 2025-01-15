@@ -1492,7 +1492,7 @@ using namespace Eigen;
     sceneRendererMTL->render(1.0/60.0,&renderInfo);
 }
 
-- (void)assignViewMatrixFromMapbox:(NSArray<NSNumber *> *)matrixValues scale:(double)scale tileSize:(int)tileSize
+- (void)assignViewMatrixFromMapbox:(NSArray<NSNumber *> *)matrixValues scale:(double)scale tileSize:(int)tileSize isMoving:(bool)isMoving
 {
     Maply::MapViewOverlay_iOSRef theMapView = std::dynamic_pointer_cast<Maply::MapViewOverlay_iOS>(visualView);
     if (theMapView) {
@@ -1509,6 +1509,7 @@ using namespace Eigen;
         Eigen::Matrix4d mvp = (inMvp * (scaleTrans * transTrans) ).matrix();
 
         theMapView->assignMatrix(mvp);
+        theMapView->setUserMotion(isMoving);
     }
 }
 
