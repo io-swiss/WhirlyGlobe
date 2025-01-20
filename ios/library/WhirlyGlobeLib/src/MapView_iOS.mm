@@ -141,7 +141,7 @@ Point2d MapViewOverlay_iOS::screenSizeInDisplayCoords(const Point2f &frameSize)
     ll = ll/ll.w();
     ur = ur/ur.w();
 
-    screenSize = Point2d(ur.x(),ur.y()) - Point2d(ll.x(),ll.y());
+    screenSize = 0.5 * (Point2d(ur.x(),ur.y()) - Point2d(ll.x(),ll.y()));
         
     return screenSize;
 }
