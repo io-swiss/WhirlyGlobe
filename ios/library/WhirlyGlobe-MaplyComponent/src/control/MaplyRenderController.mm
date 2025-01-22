@@ -1492,7 +1492,19 @@ using namespace Eigen;
     sceneRendererMTL->render(1.0/60.0,&renderInfo);
 }
 
-- (void)assignViewMatrixFromMapbox:(NSArray<NSNumber *> *)matrixValues scale:(double)scale tileSize:(int)tileSize isMoving:(bool)isMoving
+- (void)assignViewMatrixFromMapbox:(NSArray<NSNumber *> *)matrixValues
+                             scale:(double)scale
+                          tileSize:(int)tileSize
+                            isMoving: (bool)isMoving
+                            hasMoved: (bool)hasMoved
+                            isZooming: (bool)isZooming
+                            hasZoomed: (bool)hasZoomed
+                            isPanning: (bool)isPanning
+                            hasPanned: (bool)hasPanned
+                            isRotating: (bool)isRotating
+                            hasRotated: (bool)hasRotated
+                            isTilting: (bool)isTilting
+                            hasTilted: (bool)hasTilted
 {
     Maply::MapViewOverlay_iOSRef theMapView = std::dynamic_pointer_cast<Maply::MapViewOverlay_iOS>(visualView);
     if (theMapView) {
@@ -1510,6 +1522,14 @@ using namespace Eigen;
 
         theMapView->assignMatrix(mvp);
         theMapView->setUserMotion(isMoving);
+        theMapView->setHasMoved(hasMoved);
+        theMapView->setIsZooming(isZooming);
+        theMapView->setHasZoomed(hasZoomed);
+        theMapView->setIsPanning(isPanning);
+        theMapView->setIsRotating(isRotating);
+        theMapView->setHasRotated(hasRotated);
+        theMapView->setIsTilting(isTilting);
+        theMapView->setHasTilted(hasTilted);
     }
 }
 
