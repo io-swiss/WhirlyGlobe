@@ -1493,7 +1493,7 @@ using namespace Eigen;
 }
 
 - (void)assignViewMatrixFromMapbox:(NSArray<NSNumber *> *)matrixValues
-                             scale:(double)scale
+                             scale:(double)zoom
                           tileSize:(int)tileSize
                             isMoving: (bool)isMoving
                             hasMoved: (bool)hasMoved
@@ -1515,12 +1515,13 @@ using namespace Eigen;
         }
 
         // Apply a scale to our data first
-        double worldSize = tileSize / (M_PI) * pow(2.0,scale) ;
+        double worldSize = tileSize / (M_PI) * pow(2.0,zoom) ;
         const Eigen::Affine3d scaleTrans(Eigen::Scaling(worldSize,-worldSize,1.0));
         const Eigen::Affine3d transTrans(Eigen::Translation3d(M_PI,-M_PI,0.0));
         Eigen::Matrix4d mvp = (inMvp * (scaleTrans * transTrans) ).matrix();
 
         theMapView->assignMatrix(mvp);
+        theMapView->assignScreenSizeInDisplayCoords(3.1414/pow(2.0,zoom));
         theMapView->setUserMotion(isMoving);
         theMapView->setHasMoved(hasMoved);
         theMapView->setIsZooming(isZooming);
