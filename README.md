@@ -7,6 +7,10 @@
 [![Closed Issues](https://img.shields.io/github/issues-closed/mousebird-consulting-inc/WhirlyGlobe.svg?color=blue)](https://github.com/mousebird-consulting-inc/WhirlyGlobe/issues?q=is%3Aissue+is%3Aclosed)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](https://github.com/mousebird-consulting-inc/WhirlyGlobe/pulls)
 
+Notice
+---
+This toolkit isn't being actively maintained.  We use it ourselves on iOS and with a WebAssembly version that we'll update occasionally to keep track of those platforms, but beyond that we're not fixing issues.
+
 What is WhirlyGlobe-Maply?
 ---
 
